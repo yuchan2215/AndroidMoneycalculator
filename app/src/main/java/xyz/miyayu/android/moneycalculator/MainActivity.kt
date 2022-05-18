@@ -1,46 +1,50 @@
 package xyz.miyayu.android.moneycalculator
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.SimpleAdapter
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import xyz.miyayu.android.moneycalculator.databinding.MoneyInputBinding
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //金額一覧を作成
-        val list = mutableListOf<MutableMap<String, Int>>()
-        listOf(1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000).forEach {
-            list.add(mutableMapOf("money" to it))
-        }
-        //金額に円を足してテキストとする。
-        val from = arrayOf("money")
-        val to = intArrayOf(R.id.moneyType)
+        //利用するお金の種類
+        val moneys = listOf(1, 5, 10, 50, 100, 500, 1000, 2000, 5000, 10000)
         val menu = findViewById<ListView>(R.id.lvItems)
-        val adapter = SimpleAdapter(this@MainActivity, list, R.layout.money_input, from, to)
-        adapter.viewBinder = MoneyViewBinder()
+        val adapter = InputAdapter(this@MainActivity, moneys)
         menu.adapter = adapter
-
     }
 
-    /**
-     * 円を付け足すViewBinder
-     */
-    private inner class MoneyViewBinder : SimpleAdapter.ViewBinder {
-        override fun setViewValue(view: View?, data: Any?, textRepresentation: String?): Boolean {
-            //MoneyTypeなら？
-            if (view?.id == R.id.moneyType) {
-                //円を足す
-                val text = "${data}${getString(R.string.yen)}"
-                val textView = view as TextView
-                textView.text = text
-                return true
+    private inner class InputAdapter(context: Context, val items: List<Int>) :
+        ArrayAdapter<Int>(context, R.layout.money_input, items) {
+        private val inflater: LayoutInflater =
+            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view: View
+            val binding: MoneyInputBinding
+            //新規なら
+            if (null == convertView) {
+                binding = DataBindingUtil.inflate(inflater, R.layout.money_input, parent, false)
+            //再利用されたなら
+            } else {
+                binding = convertView.tag as MoneyInputBinding
             }
-            return false
+            //値をあてていく
+            binding.type = items[position].toString()
+            binding.moneyAmount = "0"
+
+            //view等の設定
+            view = binding.root
+            view.tag = binding
+            return view
         }
     }
 }
