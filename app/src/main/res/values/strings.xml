@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">MoneyCalculator</string>
+    <string name="app_name">金額計算機</string>
+    <string name="add">+</string>
+    <string name="sub">-</string>
+    <string name="yen">円</string>
+    <string name="sum">合計金額</string>
+    <string name="defaultCount">0</string>
+    <string name="countHint">硬貨・紙幣の枚数</string>
+    <string name="single">1枚</string>
+    <string name="ten">10枚</string>
+    <string name="twenty">20枚</string>
+    <string name="fifty">50枚</string>
 </resources>
