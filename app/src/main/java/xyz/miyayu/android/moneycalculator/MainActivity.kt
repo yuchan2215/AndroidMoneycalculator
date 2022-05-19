@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     val moneyAmount = if (mapEntry.value.isEmpty()) 0L else mapEntry.value.toLong()
                     sum += moneyType * moneyAmount
                 }
-                return@map sum.toString()
+                return@map "%,d".format(sum)
             }catch(e:Exception){
                 return@map "Error"
             }
