@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ListView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.*
@@ -91,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 rootViewModel.amountMaps.observe(this@MainActivity, observer)
 
                 //EditTextのListenerを登録する。
-                val watcher = CustomWatcher(view)
+                val watcher = CustomWatcher(view,binding.inputMoneyAmount)
                 binding.inputMoneyAmount.addTextChangedListener(watcher)
 
                 //Tagの内容を更新。
@@ -119,16 +120,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
     //EditTextの入力を監視する
-    inner class CustomWatcher(private val view: View):TextWatcher{
+    inner class CustomWatcher(private val view: View,private val editText:EditText):TextWatcher{
+        private val regex = "^0+([0-9]+)".toRegex()     //頭のゼロを監視するための正規表現
         private var text = ""
         override fun afterTextChanged(p0: Editable?) {
-            //テキストが更新されているなら
-            if(p0?.toString() != text) {
+            if(p0?.toString() == text){ //データが未更新なら
+                return
+            }else if(p0?.toString()?.isEmpty() == true){ //空なら
+                //0にして、一番後ろにカーソルを合わせる
+                editText.setText("0")
+                editText.setSelection(1)
+                text = "0"
+            }else if(p0.toString().matches(regex)){ //頭に0があるなら
+                editText.setText(regex.replace(editText.text,"$1")) //0を外す
+                val select = if(editText.text.length == 1) 1 else 0 //何文字めにカーソルを合わせるか
+                editText.setSelection(select) //カーソルを合わせる
+                text = editText.text.toString()
+            }else{ //シンプルに値が追加されているなら
                 text = p0.toString()
-                Log.i("TextWatcherEvent", "${(view.tag as TagObject).position} 番目のデータを更新 : $p0")
+                //テキストが更新されているなら
+                Log.i("TextWatcherEvent", "${(view.tag as TagObject).position} 番目のデータを更新 : $text")
 
                 val map = rootViewModel.amountMaps.value //viewModelからmapを取得
-                map?.set((view.tag as TagObject).position.toString(), p0.toString()) //マップに値を足す。
+                map?.set((view.tag as TagObject).position.toString(), text) //マップに値を足す。
                 rootViewModel.amountMaps.postValue(map?.toMutableMap()) //オブジェクトを更新する
             }
         }
