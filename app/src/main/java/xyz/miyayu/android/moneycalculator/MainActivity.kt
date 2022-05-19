@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
     //EditTextの入力を監視する
     inner class CustomWatcher(private val view: View,private val editText:EditText):TextWatcher{
         private val regex = "^0+([0-9]+)".toRegex()     //頭のゼロを監視するための正規表現
-        private var text = ""
+        private var text = "0"
         override fun afterTextChanged(p0: Editable?) {
             if(p0?.toString() == text){ //データが未更新なら
                 return
