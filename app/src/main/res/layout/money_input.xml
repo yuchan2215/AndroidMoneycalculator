@@ -5,11 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="type"
+            name="varMoneyType"
             type="String" />
         <variable
-            name="moneyAmount"
-            type="String" />
+            name="viewModel"
+            type="xyz.miyayu.android.moneycalculator.MainActivity.AmountsViewModel" />
         <import type="android.view.View"/>
     </data>
 
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@{type}"
+        android:text="@{varMoneyType}"
         app:layout_constraintBaseline_toBaselineOf="@+id/inputMoneyAmount"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -33,11 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:ems="10"
-        android:hint="@{moneyAmount}"
+        android:hint="@string/countHint"
         android:importantForAutofill="no"
         android:inputType="number"
         android:minHeight="48dp"
-        android:text="@string/defaultCount"
+        android:text="0"
         app:layout_constraintBaseline_toBaselineOf="@+id/addButton"
         app:layout_constraintEnd_toStartOf="@+id/addButton"
         app:layout_constraintHorizontal_bias="0.5"
